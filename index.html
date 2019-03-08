@@ -5,6 +5,8 @@
 	<script type="text/paperscript" canvas="myCanvas">
 	
 		var canvas = document.getElementById('myCanvas');
+
+		var refPoint = new Point(0.01,0.01);
 		
 		var straightLine1 = new Path.Line(view.bounds.topLeft, view.bounds.bottomRight);
 		straightLine1.strokeColor = 'magenta';
@@ -99,21 +101,18 @@
 				}
 
 				if(previewFlag == 1){
-					if(previewPath.segments[1].point < destination) {
+					if(previewPath.segments[1].point.isClose(destination,0.1) == false) {
+						console.log("g");
 						previewPath.segments[1].point += vector/60;
-							if(previewPath.segments[1].point >= destination){
+							if(previewPath.segments[1].point.isClose(destination,0.1)){
 								dotdot = previewDotSymbol.place(destination);
 							}
 					}
 				}
 
-				if(previewPath.segments[1].point >= destination){
-					previewDotSymbol.definition.opacity += 0.05;
-					previewDotSymbol.definition.fillColor.hue += 1;
-					if(previewDotSymbol.definition.opacity >= 1){
-						previewFlag = 0;
-					}
-				}
+				
+				previewDotSymbol.definition.opacity += 0.05;
+				previewDotSymbol.definition.fillColor.hue += 1;
 		}
 
 		var previewFlag = 0;
@@ -172,25 +171,30 @@
 
 		////////////////////////////////////////////////// Playground //////////////////////////////////////////////////////////////
 
-		previewGate(1/2, 1/2);
+		resetState();
 
 		function onMouseDown(event){
 			if(count == 0){
-				changeState(1/2, 1/2);
+				previewGate(3/2, 1/2);
+				console.log(x + " " + y);
 				count++;
 			}
 			else if(count == 1){
+				changeState(3/2, 1/2);
+				count++;
+			}
+			else if(count == 2){
 				if(changeFlag == 1){
 					changeStateInstant();
 				}
 				previewGate(1/4,1/4);
 				count++;
 			}
-			else if(count == 2){
+			else if(count == 3){
 				changeState(1/4, 1/4);
 				count++;
 			}
-			else if(count == 3){
+			else if(count == 4){
 				resetState();
 			}
 		}
@@ -200,8 +204,8 @@
 	<style>
 	canvas {
 	  border:1px solid black;
-	  width: 850px;
-	  height: 850px;
+	  width: 1300px;
+	  height: 1300px;
 	  padding: 0;
       margin: auto;
       display: block;
