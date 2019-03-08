@@ -124,8 +124,8 @@
 			previewPath.segments[1].point = dot.position;
 			dotdot.remove();
 
-			x = (circle.radius * Math.sin(theta*Math.PI) * Math.cos(phi*Math.PI)) + view.center.x;
-			y = (circle.radius * Math.sin(theta*Math.PI) * Math.sin(phi*Math.PI)) + view.center.y;
+			x = (circle.radius * Math.sin(theta) * Math.cos(phi)) + view.center.x;
+			y = (circle.radius * Math.sin(theta) * Math.sin(phi)) + view.center.y;
 
 			destination = new Point(x, y);
 			previewFlag = 1;
@@ -138,8 +138,8 @@
 			previewPath.segments[1].point = dot.position;
 			dotdot.remove();
 
-			x = (circle.radius * Math.sin(theta*Math.PI) * Math.cos(phi*Math.PI)) + view.center.x;
-			y = (circle.radius * Math.sin(theta*Math.PI) * Math.sin(phi*Math.PI)) + view.center.y;
+			x = (circle.radius * Math.sin(theta) * Math.cos(phi)) + view.center.x;
+			y = (circle.radius * Math.sin(theta) * Math.sin(phi)) + view.center.y;
 
 			destination = new Point(x, y);
 			changeFlag = 1;
