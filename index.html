@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<script type="text/javascript" src="C:\Users\NICKEIEI\Desktop\FKSphere\node_modules\paper\dist\paper-full.js"></script> 
+	<script type="text/javascript" src="C:\Users\NICKEIEI\Desktop\FKSphere\node_modules\paper\dist\paper-full.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script> 
 	<script type="text/paperscript" canvas="myCanvas">
 	
 		var canvas = document.getElementById('myCanvas');
 
-		var refPoint = new Point(0.01,0.01);
-		
 		var straightLine1 = new Path.Line(view.bounds.topLeft, view.bounds.bottomRight);
 		straightLine1.strokeColor = 'magenta';
 		straightLine1.strokeWidth = 8.5;
@@ -102,10 +101,10 @@
 
 				if(previewFlag == 1){
 					if(previewPath.segments[1].point.isClose(destination,0.1) == false) {
-						console.log("g");
 						previewPath.segments[1].point += vector/60;
 							if(previewPath.segments[1].point.isClose(destination,0.1)){
 								dotdot = previewDotSymbol.place(destination);
+								//previewFlag = 0;
 							}
 					}
 				}
@@ -173,7 +172,7 @@
 
 		resetState();
 
-		function onMouseDown(event){
+		/*function onMouseDown(event){
 			if(count == 0){
 				previewGate(3/2, 1/2);
 				console.log(x + " " + y);
@@ -197,9 +196,34 @@
 			else if(count == 4){
 				resetState();
 			}
-		}
+		}*/
 
 		////////////////////////////////////////////////// Playground //////////////////////////////////////////////////////////////
+
+		var socket = io('http://4f418df6.ngrok.io');
+
+  		socket.on('previewGate', function(coordinate){
+  			console.log(coordinate);
+    		previewGate(coordinate[0],coordinate[1]);
+  		});
+
+  		socket.on('applyGate', function(coordinate){
+  			console.log(coordinate);
+    		changeState(coordinate[0],coordinate[1]);
+  		});
+
+  		socket.on('skip', function(){
+    		changeStateInstant();
+  		});
+
+  		socket.on('reset', function(){
+    		resetState();
+  		});
+
+  		socket.on('event',function(msg){
+  			console.log(msg);
+  		});
+
 	</script>
 	<style>
 	canvas {
