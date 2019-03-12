@@ -2,7 +2,7 @@
 <html>
 <head>
 	<script type="text/javascript" src="C:\Users\NICKEIEI\Desktop\FKSphere\node_modules\paper\dist\paper-full.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script> 
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
 	<script type="text/paperscript" canvas="myCanvas">
 	
 		var canvas = document.getElementById('myCanvas');
@@ -30,19 +30,37 @@
 			strokeWidth: 8.5,
 		});
 
-		var dot = new Path.Circle({
+		var dot = new Shape.Ellipse({
 			center: view.center,
-			radius: 45,
+			size: [90,90],
 			strokeColor: 'Aqua',
 			fillColor: 'Aqua'
 		});
 
 
 		/////////////////////////////////// Spherical Coordinate ///////////////////////////////////////////////
-		var x = (circle.radius * Math.sin(0) * Math.cos(0)) + view.center.x;
-		var y = (circle.radius * Math.sin(0) * Math.sin(0)) + view.center.y;
+		var x = (circle.radius * Math.sin(0*Math.PI) * Math.cos(0*Math.PI)) + view.center.x;
+		var y = (circle.radius * Math.sin(0*Math.PI) * Math.sin(0*Math.PI)) + view.center.y;
 
 		var destination = new Point(x, y);
+
+		var circleRef0 = new Point(view.center.x, view.center.y - circle.radius);
+		var circleRef1 = new Point(view.center.x - circle.radius, view.center.y);
+		var circleRef2 = new Point(view.center.x + circle.radius, view.center.y);
+		var circleRef3 = new Point(view.center.x, view.center.y + circle.radius);
+
+		var distRef0 = view.center - circleRef0;
+		var distRef1 = view.center - circleRef1;
+		var distRef2 = view.center - circleRef2;
+		var distRef3 = view.center - circleRef3;
+		var totalDist = distRef0 + distRef1 +distRef2 + distRef3;
+
+		console.log(distRef0);
+		console.log(distRef1);
+		console.log(distRef2);
+		console.log(distRef3);
+		console.log(totalDist);
+
 		/////////////////////////////////// Spherical Coordinate ///////////////////////////////////////////////
 
 		
@@ -53,9 +71,9 @@
 	    strokeWidth: 6.5
 	});
 
-		var previewDot = new Path.Circle({
+		var previewDot = new Path.Ellipse({
 		 center: dot.position+200,
-    	 radius: 30,
+    	 size: [50,50],
     	 fillColor: 'aqua'
 	});
 
@@ -93,6 +111,20 @@
 	}
 
 		function onFrame(event) {
+				circleRef0 = new Point(view.center.x, view.center.y - circle.radius);
+				circleRef1 = new Point(view.center.x - circle.radius, view.center.y);
+				circleRef2 = new Point(view.center.x + circle.radius, view.center.y);
+				circleRef3 = new Point(view.center.x, view.center.y + circle.radius);
+
+				distRef0 = dot.position - circleRef0;
+				distRef1 = dot.position - circleRef1;
+				distRef2 = dot.position - circleRef2;
+				distRef3 = dot.position - circleRef3;
+				totalDist = distRef0 + distRef1 +distRef2 + distRef3;
+
+				dot.size.width = 90 + Math.abs(totalDist.y)/20;
+				dot.size.height = 90 + Math.abs(totalDist.x)/20;
+
 				var vector = destination - dot.position;
 
 				if(changeFlag == 1){
@@ -109,7 +141,8 @@
 					}
 				}
 
-				
+				previewDot.size.width = 90 + Math.abs(totalDist.y)/20;
+				previewDot.size.height = 90 + Math.abs(totalDist.x)/20;
 				previewDotSymbol.definition.opacity += 0.05;
 				previewDotSymbol.definition.fillColor.hue += 1;
 		}
@@ -124,8 +157,8 @@
 			previewPath.segments[1].point = dot.position;
 			dotdot.remove();
 
-			x = (circle.radius * Math.sin(theta) * Math.cos(phi)) + view.center.x;
-			y = (circle.radius * Math.sin(theta) * Math.sin(phi)) + view.center.y;
+			x = (circle.radius * Math.sin(theta+1/2*Math.PI) * Math.cos(phi+3/2*Math.PI)) + view.center.x;
+			y = (circle.radius * Math.sin(theta+1/2*Math.PI) * Math.sin(phi+3/2*Math.PI)) + view.center.y;
 
 			destination = new Point(x, y);
 			previewFlag = 1;
@@ -138,8 +171,8 @@
 			previewPath.segments[1].point = dot.position;
 			dotdot.remove();
 
-			x = (circle.radius * Math.sin(theta) * Math.cos(phi)) + view.center.x;
-			y = (circle.radius * Math.sin(theta) * Math.sin(phi)) + view.center.y;
+			x = (circle.radius * Math.sin(theta+1/2*Math.PI) * Math.cos(phi+3/2*Math.PI)) + view.center.x;
+			y = (circle.radius * Math.sin(theta+1/2*Math.PI) * Math.sin(phi+3/2*Math.PI)) + view.center.y;
 
 			destination = new Point(x, y);
 			changeFlag = 1;
@@ -157,50 +190,69 @@
 
 
 		function resetState(){
+			x = (circle.radius * Math.sin(1/2*Math.PI) * Math.cos(3/2*Math.PI)) + view.center.x;
+			y = (circle.radius * Math.sin(1/2*Math.PI) * Math.sin(3/2*Math.PI)) + view.center.y;
+
+			var destination = new Point(x, y);
+
 			changeFlag = 0;
 			previewFlag = 0;
-			dot.position = view.center;
+			dot.position = destination;
 			previewPath.segments[0].point = dot.position;
 			previewPath.segments[1].point = dot.position;
 			dotdot.remove();
 		}
 
-	/////////////////////////////////////////////////////// Event //////////////////////////////////////////////////////////////
+		function initState(){
+			x = (circle.radius * Math.sin(0*Math.PI) * Math.cos(0*Math.PI)) + view.center.x;
+			y = (circle.radius * Math.sin(0*Math.PI) * Math.sin(0*Math.PI)) + view.center.y;
+
+			var destination = new Point(x, y);
+
+			changeFlag = 0;
+			previewFlag = 0;
+			dot.position = destination;
+			previewPath.segments[0].point = dot.position;
+			previewPath.segments[1].point = dot.position;
+			dotdot.remove();
+		}
+
+		/////////////////////////////////////////////////////// Event //////////////////////////////////////////////////////////////
 
 
 		////////////////////////////////////////////////// Playground //////////////////////////////////////////////////////////////
 
-		resetState();
-
-		/*function onMouseDown(event){
+		initState();
+		
+		function onMouseDown(event){
 			if(count == 0){
-				previewGate(3/2, 1/2);
+				previewGate(0*Math.PI, 0*Math.PI);
 				console.log(x + " " + y);
 				count++;
 			}
 			else if(count == 1){
-				changeState(3/2, 1/2);
+				changeState(0*Math.PI, 0*Math.PI);
 				count++;
-			}
+			}/*
 			else if(count == 2){
 				if(changeFlag == 1){
 					changeStateInstant();
 				}
-				previewGate(1/4,1/4);
+				previewGate(1/2*Math.PI, 1/2*Math.PI);
 				count++;
 			}
 			else if(count == 3){
-				changeState(1/4, 1/4);
+				changeState(1/2*Math.PI, 1/2*Math.PI);
 				count++;
 			}
 			else if(count == 4){
 				resetState();
-			}
-		}*/
+			}*/
+		}
 
 		////////////////////////////////////////////////// Playground //////////////////////////////////////////////////////////////
-
-		var socket = io('http://192.168.1.43:3000');
+		
+		var socket = io('http://4d5b9167.ngrok.io');
 
   		socket.on('previewGate', function(coordinate){
   			console.log(coordinate);
