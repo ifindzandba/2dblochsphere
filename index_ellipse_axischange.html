@@ -157,10 +157,10 @@
 			previewPath.segments[1].point = dot.position;
 			dotdot.remove();
 
-			x = (circle.radius * Math.sin(theta+1/2*Math.PI) * Math.cos(phi+3/2*Math.PI)) + view.center.x;
-			y = (circle.radius * Math.sin(theta+1/2*Math.PI) * Math.sin(phi+3/2*Math.PI)) + view.center.y;
+			z = (circle.radius * Math.cos(theta+1*Math.PI)) + view.center.x;
+			y = (circle.radius * Math.sin(theta+1*Math.PI) * Math.sin(phi)) + view.center.y;
 
-			destination = new Point(x, y);
+			destination = new Point(y, z);
 			previewFlag = 1;
 		}
 
@@ -171,10 +171,10 @@
 			previewPath.segments[1].point = dot.position;
 			dotdot.remove();
 
-			x = (circle.radius * Math.sin(theta+1/2*Math.PI) * Math.cos(phi+3/2*Math.PI)) + view.center.x;
-			y = (circle.radius * Math.sin(theta+1/2*Math.PI) * Math.sin(phi+3/2*Math.PI)) + view.center.y;
+			z = (circle.radius * Math.cos(theta+1*Math.PI)) + view.center.x;
+			y = (circle.radius * Math.sin(theta+1*Math.PI) * Math.sin(phi)) + view.center.y;
 
-			destination = new Point(x, y);
+			destination = new Point(y, z);
 			changeFlag = 1;
 		}
 
@@ -190,10 +190,10 @@
 
 
 		function resetState(){
-			x = (circle.radius * Math.sin(1/2*Math.PI) * Math.cos(3/2*Math.PI)) + view.center.x;
-			y = (circle.radius * Math.sin(1/2*Math.PI) * Math.sin(3/2*Math.PI)) + view.center.y;
+			z = (circle.radius * Math.cos(1*Math.PI)) + view.center.x;
+			y = (circle.radius * Math.sin(1*Math.PI) * Math.sin(0)) + view.center.y;
 
-			var destination = new Point(x, y);
+			destination = new Point(y, z);
 
 			changeFlag = 0;
 			previewFlag = 0;
@@ -204,10 +204,10 @@
 		}
 
 		function initState(){
-			x = (circle.radius * Math.sin(0*Math.PI) * Math.cos(0*Math.PI)) + view.center.x;
-			y = (circle.radius * Math.sin(0*Math.PI) * Math.sin(0*Math.PI)) + view.center.y;
+			z = (circle.radius * Math.cos(0)) + view.center.x;
+			y = (circle.radius * Math.sin(0) * Math.sin(0)) + view.center.y;
 
-			var destination = new Point(x, y);
+			destination = new Point(y, z);
 
 			changeFlag = 0;
 			previewFlag = 0;
@@ -233,25 +233,25 @@
 			else if(count == 1){
 				changeState(0*Math.PI, 0*Math.PI);
 				count++;
-			}/*
+			}
 			else if(count == 2){
 				if(changeFlag == 1){
 					changeStateInstant();
 				}
-				previewGate(1/2*Math.PI, 1/2*Math.PI);
+				previewGate(1*Math.PI, 1/2*Math.PI);
 				count++;
 			}
 			else if(count == 3){
-				changeState(1/2*Math.PI, 1/2*Math.PI);
+				changeState(1*Math.PI, 1/2*Math.PI);
 				count++;
 			}
 			else if(count == 4){
 				resetState();
-			}*/
+			}
 		}
 
 		////////////////////////////////////////////////// Playground //////////////////////////////////////////////////////////////
-		
+		/*
 		var socket = io('http://4d5b9167.ngrok.io');
 
   		socket.on('previewGate', function(coordinate){
@@ -274,7 +274,7 @@
 
   		socket.on('event',function(msg){
   			console.log(msg);
-  		});
+  		});*/
 
 	</script>
 	<style>
