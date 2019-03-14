@@ -80,7 +80,11 @@
 		var previewDotSymbol = new Symbol(previewDot);
 		previewDotSymbol.definition.opacity = 0;
 
+		var chDotSymbol = new Symbol(previewDot);
+		chDotSymbol.definition.opacity = 0;
+
 		var dotdot = new SymbolItem();
+		var challengeDot = dotdot;
 
 		view.onResize = function(event) { //For responsive design.
 		    dot.position = view.center;
@@ -200,6 +204,7 @@
 			dot.position = destination;
 			previewPath.segments[0].point = dot.position;
 			previewPath.segments[1].point = dot.position;
+			challengeDot.remove();
 			dotdot.remove();
 		}
 
@@ -214,7 +219,23 @@
 			dot.position = destination;
 			previewPath.segments[0].point = dot.position;
 			previewPath.segments[1].point = dot.position;
+			challengeDot.remove();
 			dotdot.remove();
+		}
+
+		function challengeMarker(theta, phi){
+			challengeDot.remove();
+			dotdot.remove();
+			changeFlag = 0;
+			previewFlag = 0;
+			z = (circle.radius * Math.cos(theta)) + view.center.x;
+			y = (circle.radius * Math.sin(theta) * Math.sin(phi)) + view.center.y;
+
+			destination = new Point(y, z);
+			challengeDot = chDotSymbol.place(destination);
+			chDotSymbol.definition.fillColor = 'red';
+			chDotSymbol.definition.opacity = 1;
+			
 		}
 
 		/////////////////////////////////////////////////////// Event //////////////////////////////////////////////////////////////
@@ -246,6 +267,10 @@
 				count++;
 			}
 			else if(count == 4){
+				challengeMarker(1/2*Math.PI,0*Math.PI);
+				count++;
+			}
+			else if(count == 5){
 				resetState();
 			}
 		}
@@ -274,7 +299,16 @@
 
   		socket.on('event',function(msg){
   			console.log(msg);
+  		});
+
+  		socket.on('challengeMark',function(coordinate){
+  			challengeMarker(coordinate[0],coordinate[1]);
+  		});
+
+  		socket.on('removeMark',function(coordinate){
+  			challengeDot.remove();
   		});*/
+
 
 	</script>
 	<style>
