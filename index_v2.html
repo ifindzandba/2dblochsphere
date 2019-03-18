@@ -50,9 +50,9 @@
 	    	fillColor: 'aqua'
 		});
 
-		var rippleDot = new Shape.Circle({
+		var rippleDot = new Shape.Ellipse({
 			center: view.center,
-			radius: 1,
+			size: [1,1],
 			strokeColor: 'Red',
 			strokeWidth: 8.5,
 			opacity: 0
@@ -160,6 +160,11 @@
 
 				if(changeFlag == 1){
 					dot.position += vector/30;
+						if(ripplePlace == 1 && dot.position.isClose(destination,5)){
+								rippleOn('dot');
+								console.log("dot");
+								ripplePlace = 0;
+							}
 				}
 
 				if(previewFlag == 1){
@@ -173,19 +178,21 @@
 				}
 
 				if(rippleFlag == 1){
-					rippleSymbol.definition.radius += 4;
-					if(rippleSymbol.definition.radius >= 350){
-						rippleSymbol.definition.radius = 0;
+					rippleSymbol.definition.size.width += 7 + Math.abs(totalDist.y)/100;
+					rippleSymbol.definition.size.height += 7 + Math.abs(totalDist.x)/100;
+					if(rippleSymbol.definition.size.width >= 1000 || rippleSymbol.definition.size.height >= 1000){
+						rippleSymbol.definition.size= 0;
 					}
 				}
 
 				previewDotSymbol.definition.opacity += 0.05;
-				previewDotSymbol.definition.fillColor.hue += 2;
+				previewDotSymbol.definition.fillColor.hue += 3;
 		}
 
 		var previewFlag = 0;
 		var changeFlag = 0;
 		var rippleFlag = 0;
+		var ripplePlace = 1;
 		var count = 0;
 
 		function previewGate(theta, phi) {
@@ -207,12 +214,14 @@
 			previewPath.segments[0].point = dot.position;
 			previewPath.segments[1].point = dot.position;
 			dotdot.remove();
+			ripple.remove();
 
 			z = (circle.radius * Math.cos(theta+1*Math.PI)) + view.center.x;
 			y = (circle.radius * Math.sin(theta+1*Math.PI) * Math.sin(phi)) + view.center.y;
 
 			destination = new Point(y, z);
 			changeFlag = 1;
+			ripplePlace = 1;
 		}
 
 		function changeStateInstant() { //Use this to forcing state to change to avoid misleading preview gate.
@@ -274,12 +283,10 @@
 			if(where == "challenge") {
 				ripple = rippleSymbol.place(challengeDot.position);
 				rippleSymbol.definition.strokeColor = 'red';
-				rippleSymbol.definition.radius = 0;
 			}
 			else {
 				ripple = rippleSymbol.place(dot.position);
 				rippleSymbol.definition.strokeColor = 'aqua';
-				rippleSymbol.definition.radius = 0;
 			}
 
 			rippleFlag = 1;
@@ -295,27 +302,26 @@
 		
 		function onMouseDown(event){
 			if(count == 0){
-				rippleOn('dot');
+				previewGate(1*Math.PI,0);
 				count++;
 			}
 			else if(count == 1){
-				ripple.remove();
-				rippleFlag = 0;
+				changeState(1*Math.PI,0);
 				count++;
 			}
 			else if(count == 2){
 				if(changeFlag == 1){
 					changeStateInstant();
 				}
-				previewGate(1*Math.PI, 1/2*Math.PI);
+				previewGate(1/2*Math.PI, 1/2*Math.PI);
 				count++;
 			}
 			else if(count == 3){
-				changeState(1*Math.PI, 1/2*Math.PI);
+				changeState(1/2*Math.PI, 1/2*Math.PI);
 				count++;
 			}
 			else if(count == 4){
-				challengeMarker(1/2*Math.PI,1/2*Math.PI);
+				challengeMarker(0*Math.PI,1/2*Math.PI);
 				count++;
 			}
 			else if(count == 5){
