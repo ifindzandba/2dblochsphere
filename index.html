@@ -108,6 +108,8 @@
 		var chripple = dotdot;
 		var rippleplace = 1;
 
+		var vector = destination - dot.position;
+
 		view.onResize = function(event) { //For responsive design.
 		    dot.position = view.center;
 
@@ -160,22 +162,21 @@
 				dot.size.width = 90 + Math.abs(totalDist.y)/20;
 				dot.size.height = 90 + Math.abs(totalDist.x)/20;
 
-				var vector = destination - dot.position;
-
 				if(changeFlag == 1){
-					dot.position += vector/30;
-					if(dot.position.isClose(destination,7) && rippleplace == 1) {
+					dot.position += vector/100;
+					if(dot.position.isClose(destination,5) && rippleplace == 1) {
 						rippleOn('dot');
 						rippleplace = 0;
+						changeFlag = 0;
 					}
 				}
 
 				if(previewFlag == 1){
 					if(previewPath.segments[1].point.isClose(destination,0.1) == false) {
-						previewPath.segments[1].point += vector/60;
+						previewPath.segments[1].point += vector/100;
 							if(previewPath.segments[1].point.isClose(destination,0.1)){
 								dotdot = previewDotSymbol.place(destination);
-								//previewFlag = 0;
+								previewFlag = 0;
 							}
 					}
 				}
@@ -186,10 +187,10 @@
 				}
 
 				if(rippleFlag == 1){
-					rippleSymbol.definition.size.width += 20 + Math.abs(totalDist.y)/50;
-					rippleSymbol.definition.size.height += 20 + Math.abs(totalDist.x)/50;
-					chRippleSymbol.definition.size.width += 20 + Math.abs(totalDist.y)/50;
-					chRippleSymbol.definition.size.height += 20 + Math.abs(totalDist.x)/50;
+					rippleSymbol.definition.size.width += 7 + Math.abs(totalDist.y)/60;
+					rippleSymbol.definition.size.height += 7 + Math.abs(totalDist.x)/60;
+					chRippleSymbol.definition.size.width += 7 + Math.abs(totalDist.y)/60;
+					chRippleSymbol.definition.size.height += 7 + Math.abs(totalDist.x)/60;
 					if(rippleSymbol.definition.size.width >= 1200 || rippleSymbol.definition.size.height >= 1200){
 						rippleSymbol.definition.size = 0;
 					}
@@ -219,6 +220,7 @@
 			y = (circle.radius * Math.sin(theta+1*Math.PI) * Math.cos(phi)) + view.center.y;
 
 			destination = new Point(y, z);
+			vector = destination - dot.position;
 			previewFlag = 1;
 		}
 
@@ -234,6 +236,8 @@
 			y = (circle.radius * Math.sin(theta+1*Math.PI) * Math.cos(phi)) + view.center.y;
 
 			destination = new Point(y, z);
+
+			vector = destination - dot.position;
 			changeFlag = 1;
 			rippleplace = 1;
 		}
@@ -321,11 +325,11 @@
 		
 		function onMouseDown(event){
 			if(count == 0){
-				resetState();
+				//resetState();
 				count++;
 			}
 			else if(count == 1){
-				changeState(1/2*Math.PI, 0*Math.PI);
+				changeState(0*Math.PI,1/2*Math.PI);
 				count++;
 			}
 			else if(count == 2){
@@ -344,21 +348,20 @@
 		}
 
 		////////////////////////////////////////////////// Playground //////////////////////////////////////////////////////////////
-		/*
-		var socket = io('http://4d5b9167.ngrok.io');
+		
+		var socket = io('http://192.168.1.39:3000');
 
   		socket.on('previewGate', function(coordinate){
   			console.log(coordinate);
     		previewGate(coordinate[0],coordinate[1]);
+    		if(changeFlag == 1){
+    			changeStateInstant();
+    		}
   		});
 
   		socket.on('applyGate', function(coordinate){
   			console.log(coordinate);
     		changeState(coordinate[0],coordinate[1]);
-  		});
-
-  		socket.on('skip', function(){
-    		changeStateInstant();
   		});
 
   		socket.on('reset', function(){
@@ -375,7 +378,8 @@
 
   		socket.on('removeMark',function(coordinate){
   			challengeDot.remove();
-  		});*/
+  			chripple.remove();
+  		});
 
 
 	</script>
