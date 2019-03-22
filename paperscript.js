@@ -1,8 +1,5 @@
-// This a paperscript for paperjs
-// Cannot be external loaded due to CORS security
-// For applying and correcting -> Using internal script in html.
 
-var canvas = document.getElementById('myCanvas');
+	    var canvas = document.getElementById('myCanvas');
 
 		var straightLine1 = new Path.Line(view.bounds.topLeft, view.bounds.bottomRight);
 		straightLine1.strokeColor = 'magenta';
@@ -24,42 +21,88 @@ var canvas = document.getElementById('myCanvas');
 			center: view.center,
 			radius: 250,
 			strokeColor: 'White',
-			strokeWidth: 8.5,
+			strokeWidth: 8.5
 		});
 
-		var dot = new Path.Circle({
+		var dot = new Shape.Ellipse({
 			center: view.center,
-			radius: 45,
+			size: [90,90],
 			strokeColor: 'Aqua',
 			fillColor: 'Aqua'
 		});
 
+		var previewPath = new Path.Line({
+		    from: dot.position,
+		    to: dot.position,
+		    strokeColor: 'aqua',
+		    strokeWidth: 6.5
+		});
+
+		var previewDot = new Shape.Ellipse({
+			center: dot.position,
+	    	size: [50,50],
+	    	fillColor: 'aqua'
+		});
+
+		var rippleDot = new Shape.Ellipse({
+			center: view.center,
+			size: [50,50],
+			strokeColor: 'Red',
+			strokeWidth: 8.5,
+			opacity: 0
+		});
+
 
 		/////////////////////////////////// Spherical Coordinate ///////////////////////////////////////////////
-		var x = (circle.radius * Math.sin(0) * Math.cos(0)) + view.center.x;
-		var y = (circle.radius * Math.sin(0) * Math.sin(0)) + view.center.y;
+		var x = (circle.radius * Math.sin(0*Math.PI) * Math.cos(0*Math.PI)) + view.center.x;
+		var y = (circle.radius * Math.sin(0*Math.PI) * Math.cos(0*Math.PI)) + view.center.y;
 
 		var destination = new Point(x, y);
+
+		var circleRef0 = new Point(view.center.x, view.center.y - circle.radius);
+		var circleRef1 = new Point(view.center.x - circle.radius, view.center.y);
+		var circleRef2 = new Point(view.center.x + circle.radius, view.center.y);
+		var circleRef3 = new Point(view.center.x, view.center.y + circle.radius);
+
+		var distRef0 = view.center - circleRef0;
+		var distRef1 = view.center - circleRef1;
+		var distRef2 = view.center - circleRef2;
+		var distRef3 = view.center - circleRef3;
+		var totalDist = distRef0 + distRef1 +distRef2 + distRef3;
+
+		var preRef0 = previewPath.segments[1].point - circleRef0;
+		var preRef1 = previewPath.segments[1].point - circleRef1;
+		var preRef2 = previewPath.segments[1].point - circleRef2;
+		var preRef3 = previewPath.segments[1].point - circleRef3;
+		var previewDist = preRef0 + preRef1 + preRef2 + preRef3;
+
+		console.log(distRef0);
+		console.log(distRef1);
+		console.log(distRef2);
+		console.log(distRef3);
+		console.log(totalDist);
+
 		/////////////////////////////////// Spherical Coordinate ///////////////////////////////////////////////
-
-		
-		var previewPath = new Path.Line({
-	    from: dot.position,
-	    to: dot.position,
-	    strokeColor: 'aqua',
-	    strokeWidth: 6.5
-	});
-
-		var previewDot = new Path.Circle({
-		 center: dot.position+200,
-    	 radius: 30,
-    	 fillColor: 'aqua'
-	});
 
 		var previewDotSymbol = new Symbol(previewDot);
 		previewDotSymbol.definition.opacity = 0;
 
+		var chDotSymbol = new Symbol(previewDot);
+		chDotSymbol.definition.opacity = 0;
+
+		var rippleSymbol = new Symbol(rippleDot);
+		rippleSymbol.definition.opacity = 0;
+
+		var chRippleSymbol = new Symbol(rippleDot);
+		rippleSymbol.definition.opacity = 0;
+
 		var dotdot = new SymbolItem();
+		var challengeDot = dotdot;
+		var ripple = dotdot;
+		var chripple = dotdot;
+		var rippleplace = 1;
+
+		var vector = destination - dot.position;
 
 		view.onResize = function(event) { //For responsive design.
 		    dot.position = view.center;
@@ -90,32 +133,75 @@ var canvas = document.getElementById('myCanvas');
 	}
 
 		function onFrame(event) {
-				var vector = destination - dot.position;
+				circleRef0 = new Point(view.center.x, view.center.y - circle.radius);
+				circleRef1 = new Point(view.center.x - circle.radius, view.center.y);
+				circleRef2 = new Point(view.center.x + circle.radius, view.center.y);
+				circleRef3 = new Point(view.center.x, view.center.y + circle.radius);
+
+				distRef0 = dot.position - circleRef0;
+				distRef1 = dot.position - circleRef1;
+				distRef2 = dot.position - circleRef2;
+				distRef3 = dot.position - circleRef3;
+				totalDist = distRef0 + distRef1 +distRef2 + distRef3;
+				
+				preRef0 = previewPath.segments[1].point - circleRef0;
+				preRef1 = previewPath.segments[1].point - circleRef1;
+				preRef2 = previewPath.segments[1].point - circleRef2;
+				preRef3 = previewPath.segments[1].point - circleRef3;
+				previewDist = preRef0 + preRef1 + preRef2 + preRef3;
+
+				previewDotSymbol.definition.size.width = 60 + Math.abs(previewDist.y)/20;
+				previewDotSymbol.definition.size.height = 60 + Math.abs(previewDist.x)/20;
+
+				dot.size.width = 90 + Math.abs(totalDist.y)/20;
+				dot.size.height = 90 + Math.abs(totalDist.x)/20;
 
 				if(changeFlag == 1){
-					dot.position += vector/30;
+					dot.position += vector/100;
+					if(dot.position.isClose(destination,5) && rippleplace == 1) {
+						rippleOn('dot');
+						rippleplace = 0;
+						changeFlag = 0;
+					}
 				}
 
 				if(previewFlag == 1){
-					if(previewPath.segments[1].point < destination) {
-						previewPath.segments[1].point += vector/60;
-							if(previewPath.segments[1].point >= destination){
+					if(previewPath.segments[1].point.isClose(destination,0.1) == false) {
+						previewPath.segments[1].point += vector/100;
+							if(previewPath.segments[1].point.isClose(destination,0.1)){
 								dotdot = previewDotSymbol.place(destination);
+								previewFlag = 0;
 							}
 					}
 				}
 
-				if(previewPath.segments[1].point >= destination){
-					previewDotSymbol.definition.opacity += 0.05;
-					previewDotSymbol.definition.fillColor.hue += 1;
-					if(previewDotSymbol.definition.opacity >= 1){
-						previewFlag = 0;
+				if(challengeFlag == 1){
+					rippleOn('challenge');
+					challengeFlag = 0;
+				}
+
+				if(rippleFlag == 1){
+					rippleSymbol.definition.size.width += 7 + Math.abs(totalDist.y)/60;
+					rippleSymbol.definition.size.height += 7 + Math.abs(totalDist.x)/60;
+					chRippleSymbol.definition.size.width += 7 + Math.abs(totalDist.y)/60;
+					chRippleSymbol.definition.size.height += 7 + Math.abs(totalDist.x)/60;
+					if(rippleSymbol.definition.size.width >= 1200 || rippleSymbol.definition.size.height >= 1200){
+						rippleSymbol.definition.size = 0;
+					}
+
+					if(chRippleSymbol.definition.size.width >= 1200 || chRippleSymbol.definition.size.height >= 1200){
+						chRippleSymbol.definition.size = 0;
 					}
 				}
+
+				previewDotSymbol.definition.opacity += 0.05;
+				previewDotSymbol.definition.fillColor.hue += 2;
 		}
 
 		var previewFlag = 0;
 		var changeFlag = 0;
+		var rippleFlag = 0;
+		var challengeFlag = 0;
 		var count = 0;
 
 		function previewGate(theta, phi) {
@@ -124,10 +210,11 @@ var canvas = document.getElementById('myCanvas');
 			previewPath.segments[1].point = dot.position;
 			dotdot.remove();
 
-			x = (circle.radius * Math.sin(theta*Math.PI) * Math.cos(phi*Math.PI)) + view.center.x;
-			y = (circle.radius * Math.sin(theta*Math.PI) * Math.sin(phi*Math.PI)) + view.center.y;
+			z = (circle.radius * Math.cos(theta+1*Math.PI)) + view.center.x;
+			y = (circle.radius * Math.sin(theta+1*Math.PI) * Math.cos(phi)) + view.center.y;
 
-			destination = new Point(x, y);
+			destination = new Point(y, z);
+			vector = destination - dot.position;
 			previewFlag = 1;
 		}
 
@@ -137,12 +224,16 @@ var canvas = document.getElementById('myCanvas');
 			previewPath.segments[0].point = dot.position;
 			previewPath.segments[1].point = dot.position;
 			dotdot.remove();
+			ripple.remove();
 
-			x = (circle.radius * Math.sin(theta*Math.PI) * Math.cos(phi*Math.PI)) + view.center.x;
-			y = (circle.radius * Math.sin(theta*Math.PI) * Math.sin(phi*Math.PI)) + view.center.y;
+			z = (circle.radius * Math.cos(theta+1*Math.PI)) + view.center.x;
+			y = (circle.radius * Math.sin(theta+1*Math.PI) * Math.cos(phi)) + view.center.y;
 
-			destination = new Point(x, y);
+			destination = new Point(y, z);
+
+			vector = destination - dot.position;
 			changeFlag = 1;
+			rippleplace = 1;
 		}
 
 		function changeStateInstant() { //Use this to forcing state to change to avoid misleading preview gate.
@@ -157,40 +248,130 @@ var canvas = document.getElementById('myCanvas');
 
 
 		function resetState(){
+			z = (circle.radius * Math.cos(1*Math.PI)) + view.center.x;
+			y = (circle.radius * Math.sin(1*Math.PI) * Math.cos(1*Math.PI)) + view.center.y;
+
+			destination = new Point(y, z);
+
 			changeFlag = 0;
 			previewFlag = 0;
-			dot.position = view.center;
+			dot.position = destination;
 			previewPath.segments[0].point = dot.position;
 			previewPath.segments[1].point = dot.position;
+			challengeDot.remove();
 			dotdot.remove();
 		}
 
-	/////////////////////////////////////////////////////// Event //////////////////////////////////////////////////////////////
+		function initState(){
+			z = (circle.radius * Math.cos(0)) + view.center.x;
+			y = (circle.radius * Math.sin(0) * Math.cos(0)) + view.center.y;
+
+			destination = new Point(y, z);
+
+			changeFlag = 0;
+			previewFlag = 0;
+			dot.position = destination;
+			previewPath.segments[0].point = dot.position;
+			previewPath.segments[1].point = dot.position;
+			challengeDot.remove();
+			dotdot.remove();
+		}
+
+		function challengeMarker(theta, phi){
+			challengeDot.remove();
+			dotdot.remove();
+			challengeFlag = 1;
+			changeFlag = 0;
+			previewFlag = 0;
+			z = (circle.radius * Math.cos(theta)) + view.center.x;
+			y = (circle.radius * Math.sin(theta) * Math.cos(phi)) + view.center.y;
+
+			destination = new Point(y, z);
+			challengeDot = chDotSymbol.place(destination);
+			chDotSymbol.definition.fillColor = 'Tomato';
+			chDotSymbol.definition.opacity = 1;
+			rippleplace = 1;
+		}
+
+		function rippleOn(where){
+			if(where == "challenge") {
+				chripple = chRippleSymbol.place(challengeDot.position);
+				chRippleSymbol.definition.strokeColor = 'Tomato';
+				chRippleSymbol.definition.radius = 0;
+			}
+			else {
+				ripple = rippleSymbol.place(dot.position);
+				rippleSymbol.definition.strokeColor = 'aqua';
+				rippleSymbol.definition.radius = 0;
+			}
+
+			rippleFlag = 1;
+			rippleSymbol.definition.opacity = 1;
+			chRippleSymbol.definition.opacity = 1;
+		}
+
+		/////////////////////////////////////////////////////// Event //////////////////////////////////////////////////////////////
 
 
 		////////////////////////////////////////////////// Playground //////////////////////////////////////////////////////////////
 
-		previewGate(1/2, 1/2);
-
+		initState();
+		
 		function onMouseDown(event){
 			if(count == 0){
-				changeState(1/2, 1/2);
+				//resetState();
 				count++;
 			}
 			else if(count == 1){
-				if(changeFlag == 1){
-					changeStateInstant();
-				}
-				previewGate(1/4,1/4);
+				changeState(0*Math.PI,1/2*Math.PI);
 				count++;
 			}
 			else if(count == 2){
-				changeState(1/4, 1/4);
+				challengeMarker(1/2*Math.PI,1/2*Math.PI);
 				count++;
 			}
 			else if(count == 3){
-				resetState();
+				changeState(1/2*Math.PI, 1/2*Math.PI);
+				count++;
+			}
+			else if(count == 4){
+			}
+			else if(count == 5){
+				//rippleOn('challenge');
 			}
 		}
 
 		////////////////////////////////////////////////// Playground //////////////////////////////////////////////////////////////
+		
+		var socket = io('http://192.168.1.39:3000');
+
+  		socket.on('previewGate', function(coordinate){
+  			console.log(coordinate);
+    		previewGate(coordinate[0],coordinate[1]);
+    		if(changeFlag == 1){
+    			changeStateInstant();
+    		}
+  		});
+
+  		socket.on('applyGate', function(coordinate){
+  			console.log(coordinate);
+    		changeState(coordinate[0],coordinate[1]);
+  		});
+
+  		socket.on('reset', function(){
+    		resetState();
+  		});
+
+  		socket.on('event',function(msg){
+  			console.log(msg);
+  		});
+
+  		socket.on('challengeMark',function(coordinate){
+  			challengeMarker(coordinate[0],coordinate[1]);
+  		});
+
+  		socket.on('removeMark',function(coordinate){
+  			challengeDot.remove();
+  			chripple.remove();
+  		});
+
