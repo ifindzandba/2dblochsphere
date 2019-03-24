@@ -345,11 +345,11 @@
 		var socket = io('http://localhost:3000');
 
   		socket.on('previewGate', function(coordinate){
-  			console.log(coordinate);
-    		previewGate(coordinate[0],coordinate[1]);
-    		if(changeFlag == 1){
+			console.log(coordinate);
+			if(changeFlag == 1){
     			changeStateInstant();
     		}
+    		previewGate(coordinate[0],coordinate[1]);
   		});
 
   		socket.on('applyGate', function(coordinate){
