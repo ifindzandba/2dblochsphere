@@ -260,6 +260,7 @@
 			previewPath.segments[1].point = dot.position;
 			challengeDot.remove();
 			dotdot.remove();
+			ripple.remove();
 		}
 
 		function initState(){
