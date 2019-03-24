@@ -319,12 +319,11 @@
 		
 		function onMouseDown(event){
 			if(count == 0){
-				//resetState();
 				count++;
 			}
 			else if(count == 1){
-				changeState(0*Math.PI,1/2*Math.PI);
-				count++;
+				resetState();
+				//count++;
 			}
 			else if(count == 2){
 				challengeMarker(1/2*Math.PI,1/2*Math.PI);
