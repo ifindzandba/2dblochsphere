@@ -27,7 +27,7 @@
 		    from: dot.position,
 		    to: dot.position,
 		    strokeColor: 'aqua',
-		    strokeWidth: 6.5
+		    strokeWidth: 16
 		});
 
 		var previewDot = new Shape.Ellipse({
@@ -311,7 +311,7 @@
 				count++;
 			}
 			else if(count == 2){
-				changeState(1/2*Math.PI, 1/2*Math.PI);
+				previewGate(1/2*Math.PI, 1/2*Math.PI);
 				count++;
 			}
 			else if(count == 3){
