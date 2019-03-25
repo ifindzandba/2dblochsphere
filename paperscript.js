@@ -38,7 +38,7 @@
 
 		var rippleDot = new Shape.Circle({
 			center: view.center,
-			radius: 50,
+			radius: 100,
 			strokeColor: 'Red',
 			strokeWidth: 8.5,
 			opacity: 0
@@ -167,13 +167,13 @@
 				}
 
 				if(rippleFlag == 1){
-					rippleSymbol.definition.size.radius += 7;
-					chRippleSymbol.definition.size.radius += 7;
-					if(rippleSymbol.definition.size.radius > 2000){
+					rippleSymbol.definition.radius += 10;
+					chRippleSymbol.definition.radius += 10;
+					if(rippleSymbol.definition.radius > 1500){
 						rippleSymbol.definition.radius = 0;
 					}
 
-					if(chRippleSymbol.definition.size.radius > 2000){
+					if(chRippleSymbol.definition.radius > 1500){
 						chRippleSymbol.definition.radius = 0;
 					}
 				}
@@ -308,14 +308,14 @@
 			}
 			else if(count == 1){
 				resetState();
-				//count++;
+				count++;
 			}
 			else if(count == 2){
-				challengeMarker(1/2*Math.PI,1/2*Math.PI);
+				changeState(1/2*Math.PI, 1/2*Math.PI);
 				count++;
 			}
 			else if(count == 3){
-				changeState(1/2*Math.PI, 1/2*Math.PI);
+				//rippleOn('dot');
 				count++;
 			}
 			else if(count == 4){
