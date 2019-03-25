@@ -1,26 +1,18 @@
 
 	    var canvas = document.getElementById('myCanvas');
 
-		var straightLine1 = new Path.Line(view.bounds.topLeft, view.bounds.bottomRight);
-		straightLine1.strokeColor = 'magenta';
-		straightLine1.strokeWidth = 8.5;
-
-		var straightLine2 = new Path.Line(view.bounds.topRight, view.bounds.bottomLeft);
-		straightLine2.strokeColor = 'magenta';
-		straightLine2.strokeWidth = 8.5;
-
 		var straightLine3 = new Path.Line(view.bounds.topCenter, view.bounds.bottomCenter);
-		straightLine3.strokeColor = 'magenta';
+		straightLine3.strokeColor = 'SpringGreen';
 		straightLine3.strokeWidth = 8.5;
 
 		var straightLine4 = new Path.Line(view.bounds.leftCenter, view.bounds.rightCenter);
-		straightLine4.strokeColor = 'magenta';
+		straightLine4.strokeColor = 'HotPink';
 		straightLine4.strokeWidth = 8.5;
 
 		var circle = new Shape.Circle({
 			center: view.center,
 			radius: 250,
-			strokeColor: 'White',
+			strokeColor: 'DarkOrange',
 			strokeWidth: 8.5
 		});
 
@@ -44,9 +36,9 @@
 	    	fillColor: 'aqua'
 		});
 
-		var rippleDot = new Shape.Ellipse({
+		var rippleDot = new Shape.Circle({
 			center: view.center,
-			size: [50,50],
+			radius: 50,
 			strokeColor: 'Red',
 			strokeWidth: 8.5,
 			opacity: 0
@@ -105,14 +97,8 @@
 		var vector = destination - dot.position;
 
 		view.onResize = function(event) { //For responsive design.
-		    dot.position = view.center;
-
-		    straightLine1.segments[0].point = view.bounds.topLeft;
-		    straightLine1.segments[1].point = view.bounds.bottomRight;
-
-		    straightLine2.segments[0].point = view.bounds.topRight;
-		    straightLine2.segments[1].point = view.bounds.bottomLeft;
-
+			dot.position = view.center;
+			
 		    straightLine3.segments[0].point = view.bounds.topCenter;
 		    straightLine3.segments[1].point = view.bounds.bottomCenter;
 
@@ -181,16 +167,14 @@
 				}
 
 				if(rippleFlag == 1){
-					rippleSymbol.definition.size.width += 7 + Math.abs(totalDist.y)/60;
-					rippleSymbol.definition.size.height += 7 + Math.abs(totalDist.x)/60;
-					chRippleSymbol.definition.size.width += 7 + Math.abs(totalDist.y)/60;
-					chRippleSymbol.definition.size.height += 7 + Math.abs(totalDist.x)/60;
-					if(rippleSymbol.definition.size.width >= 1200 || rippleSymbol.definition.size.height >= 1200){
-						rippleSymbol.definition.size = 0;
+					rippleSymbol.definition.size.radius += 7;
+					chRippleSymbol.definition.size.radius += 7;
+					if(rippleSymbol.definition.size.radius > 2000){
+						rippleSymbol.definition.radius = 0;
 					}
 
-					if(chRippleSymbol.definition.size.width >= 1200 || chRippleSymbol.definition.size.height >= 1200){
-						chRippleSymbol.definition.size = 0;
+					if(chRippleSymbol.definition.size.radius > 2000){
+						chRippleSymbol.definition.radius = 0;
 					}
 				}
 
