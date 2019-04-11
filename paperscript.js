@@ -267,9 +267,9 @@ function challengeMarker(theta, phi) {
 	challengeFlag = 1;
 	changeFlag = 0;
 	previewFlag = 0;
-	z = (circle.radius * Math.cos(theta)) + view.center.x;
-	y = (circle.radius * Math.sin(theta) * Math.cos(phi)) + view.center.y;
-
+	z = (circle.radius * Math.cos(theta + 1 * Math.PI)) + view.center.x;
+	y = (circle.radius * Math.sin(theta + 1 * Math.PI) * Math.cos(phi)) + view.center.y;
+	
 	destination = new Point(y, z);
 	challengeDot = chDotSymbol.place(destination);
 	chDotSymbol.definition.fillColor = 'Tomato';
