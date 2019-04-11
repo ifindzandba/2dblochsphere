@@ -269,7 +269,7 @@ function challengeMarker(theta, phi) {
 	previewFlag = 0;
 	z = (circle.radius * Math.cos(theta + 1 * Math.PI)) + view.center.x;
 	y = (circle.radius * Math.sin(theta + 1 * Math.PI) * Math.cos(phi)) + view.center.y;
-	
+
 	destination = new Point(y, z);
 	challengeDot = chDotSymbol.place(destination);
 	chDotSymbol.definition.fillColor = 'Tomato';
@@ -344,6 +344,7 @@ socket.on('event', function (msg) {
 
 socket.on('challengeMark', function (coordinate) {
 	chripple.remove();
+	console.log(coordinate);
 	challengeMarker(coordinate[0], coordinate[1]);
 });
 
