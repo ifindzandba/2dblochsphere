@@ -305,8 +305,7 @@ function onMouseDown(event) {
 		count++;
 	} else if (count == 1) {
 		resetState();
-		rippleOn('dot');
-		//count++;
+		count++;
 	} else if (count == 2) {
 		previewGate(1 / 2 * Math.PI, 1 / 2 * Math.PI);
 		count++;
@@ -344,7 +343,7 @@ socket.on('event', function (msg) {
 });
 
 socket.on('challengeMark', function (coordinate) {
-	chripple.remove();s
+	chripple.remove();
 	challengeMarker(coordinate[0], coordinate[1]);
 });
 
