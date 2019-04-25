@@ -35,6 +35,34 @@ var previewDot = new Shape.Ellipse({
 	fillColor: 'aqua'
 });
 
+var clearDot0 = new Shape.Circle({
+	center: view.center,
+	radius: 100,
+	fillColor: '#4285f4',
+	opacity: 0
+});
+
+var clearDot1 = new Shape.Circle({
+	center: view.center,
+	radius: 100,
+	fillColor: '#db4437',
+	opacity: 0
+});
+
+var clearDot2 = new Shape.Circle({
+	center: view.center,
+	radius: 100,
+	fillColor: '#f4b400',
+	opacity: 0
+});
+
+var clearDot3 = new Shape.Circle({
+	center: view.center,
+	radius: 100,
+	fillColor: '#0f9d58',
+	opacity: 0
+});
+
 var rippleDot = new Shape.Circle({
 	center: view.center,
 	radius: 100,
@@ -93,6 +121,15 @@ var ripple = dotdot;
 var chripple = dotdot;
 var rippleplace = 1;
 
+var sceneflag = 0;
+var bitsceneflag = 0;
+var qubitsceneflag = 0;
+var clearsceneflag = 0;
+var scenecount = 0;
+
+var thetaScene = 1 * Math.PI;
+var phiScene = 1 * Math.PI;
+
 var vector = destination - dot.position;
 
 view.onResize = function (event) { //For responsive design.
@@ -141,28 +178,113 @@ function onFrame(event) {
 	dot.size.width = 90 + Math.abs(totalDist.y) / 20;
 	dot.size.height = 90 + Math.abs(totalDist.x) / 20;
 
-	if (changeFlag == 1) {
-		dot.position += vector / 100;
-		if (dot.position.isClose(destination, 5) && rippleplace == 1) {
-			rippleOn('dot');
-			rippleplace = 0;
-			changeFlag = 0;
-		}
-	}
 
-	if (previewFlag == 1) {
-		if (previewPath.segments[1].point.isClose(destination, 0.1) == false) {
-			previewPath.segments[1].point += vector / 100;
-			if (previewPath.segments[1].point.isClose(destination, 0.1)) {
-				dotdot = previewDotSymbol.place(destination);
-				previewFlag = 0;
+	if(sceneflag == 0){
+		if (changeFlag == 1) { //change state
+			dot.position += vector / 100;
+			if (dot.position.isClose(destination, 5) && rippleplace == 1) {
+				rippleOn('dot');
+				rippleplace = 0;
+				changeFlag = 0;
 			}
 		}
-	}
 
-	if (challengeFlag == 1) {
-		rippleOn('challenge');
-		challengeFlag = 0;
+		if (previewFlag == 1) { //preview gate
+			if (previewPath.segments[1].point.isClose(destination, 0.1) == false) {
+				previewPath.segments[1].point += vector / 100;
+				if (previewPath.segments[1].point.isClose(destination, 0.1)) {
+					dotdot = previewDotSymbol.place(destination);
+					previewFlag = 0;
+				}
+			}
+		}
+
+		if (challengeFlag == 1) {
+			rippleOn('challenge');
+			challengeFlag = 0;
+		}
+	}
+	else { //sceneflag = 1
+		if (bitsceneflag == 1){
+			scenecount++;
+
+			if(scenecount == 1){
+				rippleOn('dot');
+			}
+
+			if(scenecount % 100 == 0){
+				ripple.remove();
+				thetaScene += 1 * Math.PI;
+				z = (circle.radius * Math.cos(thetaScene)) + view.center.x;
+				y = (circle.radius * Math.sin(thetaScene) * Math.cos(1/2 * Math.PI)) + view.center.y;
+				
+				dot.position = new Point(y, z);
+				rippleOn('dot');	
+			}
+		}
+		else if(qubitsceneflag == 1){
+			scenecount++;
+
+			if(scenecount == 100){
+				ripple.remove();
+				rippleplace = 1;
+				thetaScene += 1/4 * Math.PI;
+				phiScene += 1/4 * Math.PI;
+				z = (circle.radius * Math.cos(thetaScene)) + view.center.x;
+				y = (circle.radius * Math.sin(thetaScene) * Math.cos(phiScene)) + view.center.y;
+				
+				destination = new Point(y, z);
+				vector = destination - dot.position;
+			}
+			if (dot.position.isClose(destination, 5) && rippleplace == 1) {
+				ripple.remove();
+				thetaScene += 1/4 * Math.PI;
+				phiScene += 1/4 * Math.PI;
+				z = (circle.radius * Math.cos(thetaScene)) + view.center.x;
+				y = (circle.radius * Math.sin(thetaScene) * Math.cos(phiScene)) + view.center.y;
+				
+				destination = new Point(y, z);
+				vector = destination - dot.position;
+				rippleOn('dot');
+			}
+			else{
+				dot.position += vector / 90;
+			}	
+		}
+		else if(clearsceneflag == 1){
+			if(scenecount == 0){
+				clearDot0.opacity = 1;
+				clearDot0.radius += 20;
+				if(clearDot0.radius >= 1000){
+					clearDot0.radius = 1;
+					scenecount++;
+				}
+			}
+			else if(scenecount == 1){
+				clearDot1.opacity = 1;
+				clearDot1.radius += 20;
+				if(clearDot1.radius >= 1000){
+					clearDot1.radius = 1;
+					scenecount++;
+				}
+			}
+			else if(scenecount == 2){
+				clearDot2.opacity = 1;
+				clearDot2.radius += 20;
+				if(clearDot2.radius >= 1000){
+					clearDot2.radius = 1;
+					scenecount++;
+				}
+			}
+			else if(scenecount == 3){
+				clearDot3.opacity = 1;
+				clearDot3.radius += 20;
+				if(clearDot3.radius >= 1000){
+					clearDot3.radius = 1;
+					scenecount = 0;
+				}
+			}
+		}
 	}
 
 	if (rippleFlag == 1) {
@@ -180,6 +302,7 @@ function onFrame(event) {
 	previewDotSymbol.definition.opacity += 0.05;
 	previewDotSymbol.definition.fillColor.hue += 2;
 }
+
 
 var previewFlag = 0;
 var changeFlag = 0;
@@ -238,12 +361,23 @@ function resetState() {
 
 	changeFlag = 0;
 	previewFlag = 0;
+	sceneflag = 0;
 	dot.position = destination;
 	previewPath.segments[0].point = dot.position;
 	previewPath.segments[1].point = dot.position;
 	challengeDot.remove();
 	dotdot.remove();
 	ripple.remove();
+
+	clearDot0.opacity = 0;
+	clearDot1.opacity = 0;
+	clearDot2.opacity = 0;
+	clearDot3.opacity = 0;
+
+	clearDot0.radius = 0;
+	clearDot1.radius = 0;
+	clearDot2.radius = 0;
+	clearDot3.radius = 0;
 }
 
 function initState() {
@@ -293,6 +427,57 @@ function rippleOn(where) {
 	chRippleSymbol.definition.opacity = 1;
 }
 
+function bitScene() {
+	changeFlag = 0;
+	previewFlag = 0;
+	dot.position = destination;
+	previewPath.segments[0].point = dot.position;
+	previewPath.segments[1].point = dot.position;
+	challengeDot.remove();
+	dotdot.remove();
+	ripple.remove();
+
+	scenecount = 0;
+	sceneflag = 1;
+	bitsceneflag = 1;
+}
+
+function qubitScene() {
+	bitsceneflag = 0;
+	changeFlag = 0;
+	previewFlag = 0;
+	dot.position = destination;
+	previewPath.segments[0].point = dot.position;
+	previewPath.segments[1].point = dot.position;
+	challengeDot.remove();
+	dotdot.remove();
+	ripple.remove();
+
+	scenecount = 0;
+	sceneflag = 1;
+	qubitsceneflag = 1;
+}
+
+function clearScene() {
+	qubitsceneflag = 0;
+	changeFlag = 0;
+	previewFlag = 0;
+	dot.position = destination;
+	previewPath.segments[0].point = dot.position;
+	previewPath.segments[1].point = dot.position;
+	challengeDot.remove();
+	dotdot.remove();
+	ripple.remove();
+
+	clearDot0.radius = 0;
+	clearDot1.radius = 0;
+	clearDot2.radius = 0;
+	clearDot3.radius = 0;
+
+	scenecount = 0;
+	sceneflag = 1;
+	clearsceneflag = 1;
+}
 /////////////////////////////////////////////////////// Event //////////////////////////////////////////////////////////////
 
 
@@ -305,9 +490,9 @@ function onMouseDown(event) {
 		count++;
 	} else if (count == 1) {
 		resetState();
-		count++;
+		//count++;
 	} else if (count == 2) {
-		previewGate(1 / 2 * Math.PI, 1 / 2 * Math.PI);
+		clearScene();
 		count++;
 	} else if (count == 3) {
 		//rippleOn('dot');
@@ -351,4 +536,16 @@ socket.on('challengeMark', function (coordinate) {
 socket.on('removeMark', function () {
 	challengeDot.remove();
 	chripple.remove();
+});
+
+socket.on('bitScene', function () {
+	bitScene();
+});
+
+socket.on('qubitScene', function () {
+	qubitScene();
+});
+
+socket.on('clearScene', function () {
+	clearScene();
 });
