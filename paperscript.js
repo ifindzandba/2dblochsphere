@@ -362,6 +362,7 @@ function resetState() {
 	changeFlag = 0;
 	previewFlag = 0;
 	sceneflag = 0;
+	rippleFlag = 0;
 	dot.position = destination;
 	previewPath.segments[0].point = dot.position;
 	previewPath.segments[1].point = dot.position;
