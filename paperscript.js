@@ -402,6 +402,7 @@ function challengeMarker(theta, phi) {
 	dotdot.remove();
 	challengeFlag = 1;
 	previewFlag = 0;
+	changeFlag = 0;
 	z = (circle.radius * Math.cos(theta + 1 * Math.PI)) + view.center.x;
 	y = (circle.radius * Math.sin(theta + 1 * Math.PI) * Math.cos(phi)) + view.center.y;
 
@@ -529,6 +530,9 @@ socket.on('event', function (msg) {
 });
 
 socket.on('challengeMark', function (coordinate) {
+	if (changeFlag == 1) {
+		changeStateInstant();
+	}
 	chripple.remove();
 	console.log(coordinate);
 	challengeMarker(coordinate[0], coordinate[1]);
