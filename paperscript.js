@@ -368,6 +368,7 @@ function resetState() {
 	challengeDot.remove();
 	dotdot.remove();
 	ripple.remove();
+	chripple.remove();
 
 	clearDot0.opacity = 0;
 	clearDot1.opacity = 0;
