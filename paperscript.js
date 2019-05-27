@@ -468,6 +468,7 @@ function clearScene() {
 	previewPath.segments[0].point = dot.position;
 	previewPath.segments[1].point = dot.position;
 	challengeDot.remove();
+	chripple.remove();
 	dotdot.remove();
 	ripple.remove();
 
@@ -538,10 +539,10 @@ socket.on('challengeMark', function (coordinate) {
 	challengeMarker(coordinate[0], coordinate[1]);
 });
 
-socket.on('removeMark', function () {
+/*socket.on('removeMark', function () {
 	challengeDot.remove();
 	chripple.remove();
-});
+});*/
 
 socket.on('bitScene', function () {
 	bitScene();
