@@ -488,7 +488,7 @@ function clearScene() {
 
 initState();
 
-function onMouseDown(event) {
+/*function onMouseDown(event) {
 	if (count == 0) {
 		count++;
 	} else if (count == 1) {
@@ -503,7 +503,7 @@ function onMouseDown(event) {
 	} else if (count == 4) {} else if (count == 5) {
 		//rippleOn('challenge');
 	}
-}
+}*/
 
 ////////////////////////////////////////////////// Playground //////////////////////////////////////////////////////////////
 
