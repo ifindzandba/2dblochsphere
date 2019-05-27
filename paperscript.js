@@ -400,7 +400,6 @@ function challengeMarker(theta, phi) {
 	challengeDot.remove();
 	dotdot.remove();
 	challengeFlag = 1;
-	changeFlag = 0;
 	previewFlag = 0;
 	z = (circle.radius * Math.cos(theta + 1 * Math.PI)) + view.center.x;
 	y = (circle.radius * Math.sin(theta + 1 * Math.PI) * Math.cos(phi)) + view.center.y;
