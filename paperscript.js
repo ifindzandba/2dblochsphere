@@ -552,5 +552,7 @@ socket.on('qubitScene', function () {
 });
 
 socket.on('clearScene', function () {
-	clearScene();
+	if(changeFlag == 1){
+		clearScene();
+	}
 });
