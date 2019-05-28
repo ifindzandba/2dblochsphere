@@ -545,15 +545,21 @@ socket.on('challengeMark', function (coordinate) {
 });*/
 
 socket.on('bitScene', function () {
+	thetaScene = 1 * Math.PI;
+	phiScene = 1 * Math.PI;
 	bitScene();
 });
 
 socket.on('qubitScene', function () {
+	thetaScene = 1 * Math.PI;
+	phiScene = 1 * Math.PI;
 	qubitScene();
 });
 
 socket.on('clearScene', function () {
 	if(changeFlag == 1){
+		thetaScene = 1 * Math.PI;
+		phiScene = 1 * Math.PI;
 		clearScene();
 	}
 });
